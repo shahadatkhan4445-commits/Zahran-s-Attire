@@ -135,23 +135,27 @@
     <h1>Zahran's Attire</h1>
     <p class="subtitle">প্রিমিয়াম ফ্যাশন ও ক্লদিং স্টোর</p>
 
-    <!-- Main Direct Link -->
-    <a href="http://localhost:3000" class="btn-main" id="launchBtn">
-      <span>🚀</span>
-      <span>ওয়েবসাইট ওপেন করুন</span>
+    <!-- Main Direct Links -->
+    <a href="https://zahran-s-attire.vercel.app" class="btn-main" id="launchBtn">
+      <span>🌐</span>
+      <span>সরাসরি লাইভ ওয়েবসাইট দেখুন</span>
+    </a>
+
+    <a href="http://localhost:3000" class="btn-secondary" style="margin-bottom: 14px; background: #3f3f46;">
+      💻 লোকাল ওয়েবসাইট ওপেন করুন (Localhost)
     </a>
 
     <!-- Navigation Links -->
     <div class="grid-links">
-      <a href="http://localhost:3000/admin" class="btn-secondary">⚙️ অ্যাডমিন প্যানেল</a>
-      <a href="http://localhost:3000/admin/products" class="btn-secondary">📦 প্রোডাক্ট ম্যানেজমেন্ট</a>
-      <a href="http://localhost:3000/cart" class="btn-secondary">🛒 শপিং কার্ট</a>
-      <a href="http://localhost:3000/api/seed" class="btn-secondary">🌱 Firebase সিড ডেটা</a>
+      <a href="https://zahran-s-attire.vercel.app/admin" class="btn-secondary">⚙️ লাইভ অ্যাডমিন</a>
+      <a href="https://zahran-s-attire.vercel.app/category/men" class="btn-secondary">👔 মেনস কালেকশন</a>
+      <a href="https://zahran-s-attire.vercel.app/category/women" class="btn-secondary">👗 ওমেন্স কালেকশন</a>
+      <a href="https://zahran-s-attire.vercel.app/cart" class="btn-secondary">🛒 শপিং কার্ট</a>
     </div>
 
     <div class="info-box">
-      <p id="redirectText"><span class="countdown" id="count">3</span> সেকেন্ডের মধ্যে সরাসরি ওয়েবসাইটে রিডাইরেক্ট হচ্ছে...</p>
-      <p style="margin-top: 6px; color: #a1a1aa;">যদি সার্ভার বন্ধ থাকে, ফোল্ডারে থাকা <b>Run_Server.bat</b> ফাইলটি রান করুন।</p>
+      <p id="redirectText"><span class="countdown" id="count">3</span> সেকেন্ডের মধ্যে লাইভ ওয়েবসাইটে রিডাইরেক্ট হচ্ছে...</p>
+      <p style="margin-top: 6px; color: #38bdf8; font-weight: 600;">লাইভ লিংক: zahran-s-attire.vercel.app</p>
     </div>
   </div>
 
@@ -165,7 +169,7 @@
       if (countEl) countEl.innerText = timeLeft;
       if (timeLeft <= 0) {
         clearInterval(timer);
-        window.location.href = "http://localhost:3000";
+        window.location.href = "https://zahran-s-attire.vercel.app";
       }
     }, 1000);
 
