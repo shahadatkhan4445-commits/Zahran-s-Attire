@@ -5,10 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { Upload, Image as ImageIcon, X } from "lucide-react";
 
 export default function AddProductForm({ categories }: { categories: any[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setImagePreview(result);
+        setImageUrl(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setImageUrl(url);
+    setImagePreview(url);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +38,7 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
 
     const formData = new FormData(e.target as HTMLFormElement);
     
-    // Parse variants (Simple demo: just one variant for now)
+    // Parse variants
     const variants = [
       {
         size: formData.get("size") || "One Size",
@@ -33,6 +55,7 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
       slug: (formData.get("name") as string).toLowerCase().replace(/\s+/g, '-'),
       description: formData.get("description"),
       price: parseFloat(formData.get("price") as string),
+      image: imageUrl || "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
       categoryId,
       categoryName: selectedCategory ? selectedCategory.name : "Uncategorized",
       variants,
@@ -77,6 +100,73 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
             className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Describe the product..."
           />
+        </div>
+
+        {/* Product Image Upload & URL */}
+        <div className="border rounded-lg p-4 bg-zinc-50/50 space-y-3">
+          <Label className="font-semibold text-zinc-900 flex items-center gap-2">
+            <ImageIcon className="h-4 w-4 text-blue-600" />
+            Product Picture (Image Upload or URL)
+          </Label>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="imageFile" className="text-xs text-muted-foreground block mb-1">
+                  Option 1: Upload from Computer / Mobile
+                </Label>
+                <div className="relative border-2 border-dashed border-zinc-300 hover:border-black rounded-lg p-4 text-center cursor-pointer transition bg-white">
+                  <input 
+                    type="file" 
+                    id="imageFile" 
+                    accept="image/*" 
+                    onChange={handleFileUpload} 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <Upload className="h-6 w-6 text-zinc-400 mx-auto mb-1" />
+                  <p className="text-xs font-medium text-zinc-700">Click to browse or drop image here</p>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">PNG, JPG, WEBP up to 5MB</p>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="imageUrl" className="text-xs text-muted-foreground block mb-1">
+                  Option 2: Or Paste Image Web URL
+                </Label>
+                <Input 
+                  id="imageUrl" 
+                  value={imageUrl} 
+                  onChange={handleUrlChange} 
+                  placeholder="https://images.unsplash.com/... or any link" 
+                  className="bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Live Preview */}
+            <div className="border rounded-lg p-3 bg-white flex flex-col items-center justify-center min-h-[160px] text-center">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">
+                Picture Preview
+              </span>
+              {imagePreview ? (
+                <div className="relative w-32 h-40 rounded-md overflow-hidden border shadow-sm group">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <button 
+                    type="button" 
+                    onClick={() => { setImagePreview(null); setImageUrl(""); }} 
+                    className="absolute top-1 right-1 bg-black/70 hover:bg-black text-white p-1 rounded-full text-xs transition"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="text-zinc-400 text-xs py-6 flex flex-col items-center">
+                  <ImageIcon className="h-8 w-8 mb-1 stroke-1" />
+                  <span>No image selected yet</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">

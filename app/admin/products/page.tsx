@@ -38,6 +38,7 @@ export default async function AdminProductsPage() {
           <table className="w-full text-sm text-left">
             <thead className="bg-zinc-50 border-b">
               <tr>
+                <th className="p-4 font-medium">Picture</th>
                 <th className="p-4 font-medium">Product Name</th>
                 <th className="p-4 font-medium">Category</th>
                 <th className="p-4 font-medium">Price</th>
@@ -51,13 +52,27 @@ export default async function AdminProductsPage() {
                 
                 return (
                   <tr key={product._id.toString()} className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="p-4">
+                      <div className="w-12 h-14 bg-zinc-100 rounded-lg overflow-hidden border">
+                        {product.image ? (
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            className="w-full h-full object-cover object-center" 
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">No img</div>
+                        )}
+                      </div>
+                    </td>
                     <td className="p-4 font-medium">
-                      <Link href={`/product/${product.slug}`} className="hover:underline text-blue-600">
+                      <Link href={`/product/${product.slug}`} className="hover:underline text-zinc-900 font-semibold block">
                         {product.name}
                       </Link>
+                      <span className="text-xs text-muted-foreground">{product.slug}</span>
                     </td>
                     <td className="p-4">{product.categoryName || "Uncategorized"}</td>
-                    <td className="p-4">৳ {product.price}</td>
+                    <td className="p-4 font-bold text-zinc-900">৳ {product.price}</td>
                     <td className="p-4">
                       {totalStock > 0 ? (
                         <span className="text-green-600 font-medium">{totalStock} in stock</span>
@@ -65,13 +80,13 @@ export default async function AdminProductsPage() {
                         <span className="text-red-600 font-medium">Out of stock</span>
                       )}
                     </td>
-                    <td className="p-4 flex justify-end gap-2">
-                      <Button variant="outline" size="icon" title="Edit">
-                        <Edit className="h-4 w-4 text-blue-600" />
-                      </Button>
-                      <Button variant="outline" size="icon" title="Delete">
-                        <Trash2 className="h-4 w-4 text-red-600" />
-                      </Button>
+                    <td className="p-4 flex justify-end gap-2 pt-6">
+                      <Link href={`/product/${product.slug}`} className="p-2 border rounded-md hover:bg-zinc-100 text-zinc-700">
+                        View
+                      </Link>
+                      <Link href="/admin/products/new" className="p-2 border rounded-md hover:bg-zinc-100 text-blue-600 flex items-center gap-1 text-xs">
+                        <Edit className="h-3.5 w-3.5" /> Edit/Add
+                      </Link>
                     </td>
                   </tr>
                 );
