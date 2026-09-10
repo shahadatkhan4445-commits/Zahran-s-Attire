@@ -1,0 +1,34 @@
+import { NextResponse } from "next/server";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const categoryId = searchParams.get("category");
+    
+    let productsQuery = collection(db, "products") as any;
+    if (categoryId) {
+      productsQuery = query(collection(db, "products"), where("categoryId", "==", categoryId));
+    }
+
+    const snapshot = await getDocs(productsQuery);
+    const products = snapshot.docs.map(doc => ({ _id: doc.id, ...doc.data() }));
+    
+    return NextResponse.json(products);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    body.createdAt = new Date().toISOString();
+    
+    const docRef = await addDoc(collection(db, "products"), body);
+    return NextResponse.json({ _id: docRef.id, ...body }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+  }
+}

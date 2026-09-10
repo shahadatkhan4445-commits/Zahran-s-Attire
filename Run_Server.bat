@@ -1,0 +1,3 @@
+@echo off
+echo Starting Zahrans Attire local server...
+npm run dev
