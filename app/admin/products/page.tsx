@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import { fallbackProducts } from "@/lib/fallbackData";
 
 export default async function AdminProductsPage() {
   let products: any[] = [];
@@ -14,6 +15,10 @@ export default async function AdminProductsPage() {
     products = productsSnapshot.docs.map(doc => ({ _id: doc.id, ...doc.data() }));
   } catch (error) {
     console.warn("Firebase connection failed", error);
+  }
+
+  if (products.length === 0) {
+    products = fallbackProducts;
   }
 
   return (

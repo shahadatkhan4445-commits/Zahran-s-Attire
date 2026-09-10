@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { fallbackProducts } from "@/lib/fallbackData";
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -21,6 +22,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     }
   } catch (error) {
     console.warn("Firebase connection failed. Showing empty/fallback data.", error);
+  }
+
+  // Gracefully fallback to matching category items
+  if (products.length === 0) {
+    products = fallbackProducts.filter(p => p.categoryName.toLowerCase() === slug.toLowerCase());
+    if (products.length === 0) {
+      products = fallbackProducts;
+    }
   }
 
   return (
@@ -64,18 +73,28 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product: any) => (
-              <Card key={product._id.toString()} className="border-none shadow-none group">
+              <Card key={product._id.toString()} className="border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden group">
                 <CardContent className="p-0">
                   <Link href={`/product/${product.slug}`}>
-                    <div className="relative aspect-[3/4] bg-zinc-100 rounded-lg overflow-hidden mb-3">
-                      <div className="absolute inset-0 bg-zinc-200 transition-transform duration-500 group-hover:scale-105"></div>
+                    <div className="relative aspect-[3/4] bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                      {product.image ? (
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105" 
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No Image</div>
+                      )}
                     </div>
                   </Link>
-                  <div className="space-y-1">
+                  <div className="p-4 space-y-1">
                     <Link href={`/product/${product.slug}`}>
-                      <h3 className="font-medium hover:underline">{product.name}</h3>
+                      <h3 className="font-semibold text-sm md:text-base group-hover:text-primary line-clamp-1">
+                        {product.name}
+                      </h3>
                     </Link>
-                    <p className="font-semibold">৳ {product.price}</p>
+                    <p className="font-bold text-zinc-900 dark:text-zinc-50">৳ {product.price}</p>
                   </div>
                 </CardContent>
               </Card>

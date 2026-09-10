@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { fallbackProducts } from "@/lib/fallbackData";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -17,11 +18,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     console.warn("Firebase connection failed. Showing empty/fallback data.", error);
   }
 
+  // Fallback to static product
+  if (!productDoc) {
+    productDoc = fallbackProducts.find(p => p.slug === slug);
+  }
+
   if (!productDoc) {
     return (
       <div className="container mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-bold">Product Not Found or Database Offline</h1>
-        <p className="mt-4 text-muted-foreground">Please make sure MongoDB is running to view real products.</p>
+        <h1 className="text-2xl font-bold">Product Not Found</h1>
+        <p className="mt-4 text-muted-foreground">The requested product could not be located.</p>
       </div>
     );
   }
@@ -31,6 +37,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: productDoc.name,
     price: productDoc.price,
     description: productDoc.description,
+    image: productDoc.image,
     category: productDoc.categoryName || "Uncategorized",
     colors: Array.from(new Set((productDoc.variants || []).map((v: any) => v.color).filter(Boolean))),
     sizes: Array.from(new Set((productDoc.variants || []).map((v: any) => v.size).filter(Boolean)))
@@ -41,13 +48,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Images */}
         <div className="space-y-4">
-          <div className="aspect-[3/4] bg-zinc-100 rounded-lg overflow-hidden relative">
-            <div className="absolute inset-0 bg-zinc-200"></div>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="aspect-square bg-zinc-100 rounded-md"></div>
-            ))}
+          <div className="aspect-[3/4] bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-hidden relative shadow-md">
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-full object-cover object-center" 
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Image</div>
+            )}
           </div>
         </div>
 
