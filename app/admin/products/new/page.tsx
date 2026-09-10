@@ -16,6 +16,16 @@ export default async function NewProductPage() {
     console.warn("Firebase connection failed", error);
   }
 
+  if (categories.length === 0) {
+    categories = [
+      { _id: "men", name: "Men" },
+      { _id: "women", name: "Women" },
+      { _id: "accessories", name: "Accessories" },
+      { _id: "panjabi", name: "Panjabi" },
+      { _id: "kids", name: "Kids" }
+    ];
+  }
+
   const serializedCategories = categories;
 
   return (

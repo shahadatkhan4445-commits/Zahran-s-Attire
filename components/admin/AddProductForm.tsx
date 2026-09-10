@@ -13,6 +13,14 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
   const [imageUrl, setImageUrl] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  const availableCategories = (categories && categories.length > 0) ? categories : [
+    { _id: "men", name: "Men" },
+    { _id: "women", name: "Women" },
+    { _id: "accessories", name: "Accessories" },
+    { _id: "panjabi", name: "Panjabi" },
+    { _id: "kids", name: "Kids" }
+  ];
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -47,8 +55,8 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
       }
     ];
 
-    const categoryId = formData.get("category") as string;
-    const selectedCategory = categories.find(c => c._id === categoryId);
+    const categoryId = (formData.get("category") as string) || "men";
+    const selectedCategory = availableCategories.find(c => c._id === categoryId);
 
     const productData = {
       name: formData.get("name"),
@@ -57,7 +65,7 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
       price: parseFloat(formData.get("price") as string),
       image: imageUrl || "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
       categoryId,
-      categoryName: selectedCategory ? selectedCategory.name : "Uncategorized",
+      categoryName: selectedCategory ? selectedCategory.name : "Men",
       variants,
       isFeatured: formData.get("isFeatured") === "on",
       isNewArrival: formData.get("isNewArrival") === "on",
@@ -180,10 +188,10 @@ export default function AddProductForm({ categories }: { categories: any[] }) {
               id="category" 
               name="category" 
               required
-              className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              defaultValue={availableCategories[0]?._id || "men"}
+              className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="" disabled selected>Select Category</option>
-              {categories.map((cat) => (
+              {availableCategories.map((cat) => (
                 <option key={cat._id} value={cat._id}>{cat.name}</option>
               ))}
             </select>
