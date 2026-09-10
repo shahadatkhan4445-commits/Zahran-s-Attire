@@ -1,7 +1,8 @@
 "use client";
 
 import { useCartStore } from "@/store/cart";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -59,7 +60,9 @@ export default function CheckoutPage() {
       <div className="container mx-auto px-4 py-24 text-center space-y-6">
         <h1 className="text-4xl font-bold text-green-600">Order Placed Successfully!</h1>
         <p className="text-xl text-muted-foreground">Thank you for shopping with Zahrans Attire. We will process your order soon.</p>
-        <Button asChild size="lg"><Link href="/">Return to Home</Link></Button>
+        <Link href="/" className={cn(buttonVariants({ size: "lg" }))}>
+          Return to Home
+        </Link>
       </div>
     );
   }

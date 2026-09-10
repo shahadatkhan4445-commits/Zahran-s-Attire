@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     }
 
     const snapshot = await getDocs(productsQuery);
-    const products = snapshot.docs.map(doc => ({ _id: doc.id, ...doc.data() }));
+    const products = snapshot.docs.map(doc => ({ _id: doc.id, ...(doc.data() as Record<string, any>) }));
     
     return NextResponse.json(products);
   } catch (error) {

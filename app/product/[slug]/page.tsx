@@ -39,8 +39,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description: productDoc.description,
     image: productDoc.image,
     category: productDoc.categoryName || "Uncategorized",
-    colors: Array.from(new Set((productDoc.variants || []).map((v: any) => v.color).filter(Boolean))),
-    sizes: Array.from(new Set((productDoc.variants || []).map((v: any) => v.size).filter(Boolean)))
+    colors: Array.from(new Set((productDoc.variants || []).map((v: any) => v.color).filter(Boolean))) as string[],
+    sizes: Array.from(new Set((productDoc.variants || []).map((v: any) => v.size).filter(Boolean))) as string[]
   };
 
   return (
